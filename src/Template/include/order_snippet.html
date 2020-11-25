@@ -1,0 +1,30 @@
+<div class="col-md-12 mb-4">
+    <h4 class="d-flex justify-content-between align-items-center mb-3">
+    <span class="text-muted">Your cart</span>
+    <span class="badge badge-secondary badge-pill">{{ order.items.count }}</span>
+    </h4>
+    <ul class="list-group mb-4 z-depth-1">
+    {% for order_item in order.items.all %}
+   
+    <li class="list-group-item d-flex justify-content-between lh-condensed">
+       
+        <div>
+            <img src="{{order_item.item.image.url}}" class="zoom" height="50px" width="50px"
+            alt="">
+ 
+        <h6 class="my-0">{{ order_item.quantity }} x {{ order_item.item.title}}</h6>
+      
+        </div>
+        <span class="text-muted">NGN {{ order_item.get_final_price }}</span>
+    </li>
+    {% endfor %}
+  
+    <li class="list-group-item d-flex justify-content-between">
+        <span>Total (NGN)</span>
+        <strong>NGN {{ order.get_total }}</strong>
+    </li>
+    </ul>
+
+
+</div>
+

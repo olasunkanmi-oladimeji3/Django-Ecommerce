@@ -1,0 +1,171 @@
+<p>Posts containing '{{query_string}}'</p> 
+{% for post in posts %}
+    <div>
+        <span> {{ post.created }} </span>
+        <a href="{% url 'post_detail' slug=post.slug %}"><h2 class="page-title">{{ post.title }}</h2></a>
+        <div class="post">
+            {{ post.body|safe }}
+        </div>
+    </div>
+{% endfor %} 
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mt-5 pt-5">
+    <main>
+   
+        <div class="container ">
+    
+          <div class="row wow fadeIn">
+    
+            <div class="col-4 border mt-5 pt-5">
+              <div class=" bg-light ">
+                <form id="searchform" action="{% url 'core:search' %}" method="get" class="form-inline">
+                  <div class="form-group mx-sm-3 md-2">
+    
+                  <input type="text" name="search" type="text" class="form-control" placeholder="search"/>
+    
+    
+                  </div>
+                  <button type="button" class="btn btn-primary mb-2">Search</button>
+              </form>
+                      <!-- Links -->
+                      <ul class="list-group">
+                        <center><h3><span class="navbar-brand mr-2">  Categories : </span></h1></center> 
+                        <li class="list-group-item ">
+                          <a class="" href="{% url 'core:home'%}" class="  white-text">
+                            <h6 class="  grey-text">All</h3>
+                            <span class="sr-only">(current)</span>
+                          </a>
+                        </li>
+    
+                        {% for c in categories %}
+    
+                        <li class="list-group-item ">
+                            <a href="{{c.get_absolute_url}}" class="  grey-text"><h6>{{c.name}}</h6></a>
+                        </li>
+                        {% endfor %}
+            
+                      </ul>
+                      <!-- Links -->
+    
+                  
+              </div>
+            </div>
+
+    
+            <div class="col-8 pt-3 mt-3">
+              <center><h1>{% if category %} {{category.name}} {%else%} SHOP {% endif %}</h1></center>
+                    
+              <div class="row">
+                       {% if query %}
+
+                            <h1>Item containing "{{query}}"</h1>
+                            <h3>{% with result.count as total result%}
+                                found {{total_result}} result {{total_result|pluralize}}
+
+                            </h3>
+                            {{for c in result}}
+                            <div class="col-6 col-md-4 pt-3">
+            
+                                <!--Card-->
+                                <div class="card">
+
+                                <!--Card image-->
+                                <div class="view overlay zoom">
+                                    <img src="{{c.image.url}}" class="card-img-top" height="300px"
+                                    alt="">
+                                    <a href="{{c.get_absolute_url}}">
+                                    <div class="mask rgba-white-slight zoom"></div>
+                                    </a>
+                                </div>
+                                <!--Card image-->
+
+                                <!--Card content-->
+                                <div class="card-body text-center">
+                                    <!--Category & Title-->
+                                    <a href="{{c.get_absolute_url}}" class="grey-text">
+                                    <h5>{{ c.category}}</h5>
+                                    </a>
+                                    <h5>
+                                    <strong>
+                                        <a href="{{c.get_absolute_url}}" class="dark-grey-text">{{c.title}}
+                                        {% if item.label_text %}
+                                        <span class="badge badge-pill {{c.get_label_display}}-color">{{c.label_text}}</span>
+                                        {% endif %}
+                                        </a>
+                                    </strong>
+                                    </h5>
+
+                                    <h4 class="font-weight-bold blue-text">
+                                    
+
+                                    {% if c.discount_price%}
+                                    <strong>NGN {{c.discount_price}}</strong>
+                                    {% else%}
+                                    <strong>NGN {{c.price}}</strong>
+                                    {% endif %}
+                                    </h4>
+
+                                </div>
+                                <!--Card content-->
+
+                                </div>
+                                <!--Card-->
+
+                            </div>
+                            {% empty%}
+                            <h4>No Result Found</h4>
+                            {% endfor%}
+                        {%else%}
+                        <h2>Search Error</h2>
+                       {% endif %}                      
+                              
+                    </div>
+            </div>
+          </div>
+    
+          {% if users.has_other_pages %}
+          <nav class="d-flex justify-content-center wow fadeIn ">
+        <ul class="pagination pg-blue">
+          {% if users.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ users.previous_page_number }}">&laquo;</a>
+            </li>
+          {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+          {% endif %}
+      
+      
+          {% for i in users.paginator.page_range %}
+            {% if users.number == i %}
+              <li class="page-item active">
+                <span class="page-link">{{ i }} </span>
+                  <span class="sr-only">(current)</span></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+          {% endfor %}
+      
+      
+          {% if users.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ users.next_page_number }}">
+                <span aria-hidden="true">&raquo;</span>  
+              </a>
+            </li>
+          {% else %}
+            <li class="page-item" class="disabled">
+              <span aria-hidden="true">&raquo;</span>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+        </div>
+        
+        
+      </main>
+</div>
+
+{% endblock content %}
